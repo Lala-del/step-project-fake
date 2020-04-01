@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import MainPage from "./Note/MainPage";
 
-function App() {
+class App extends  Component {
+    state={
+        notes:[],
+        selectedNote:[]
+    };
+    openNote=(e)=>{
+        let selectedNote=this.state.notes.filter(note=>note.id===e.currentTarget.getAttribute('id'));
+       this.setState({selectedNote:selectedNote}, () => {
+           console.log(this.state.selectedNote[0].title);
+       } );
+        console.log(e.currentTarget);
+        console.log(selectedNote);
+        console.log(this.state.selectedNote);
+        console.log(e.currentTarget.getAttribute('id'));
+
+    };
+    componentDidMount=()=>{
+        fetch( "http://localhost:3000/notes")
+            .then(r=>r.json())
+            .then(data=>this.setState({notes:data}));
+    };
+    render(){
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+     <MainPage
+         notes={this.state.notes}
+         openNote={this.openNote}
+         selectedNote={this.state.selectedNote}
+     />
+    </>
   );
+    }
 }
 
 export default App;
